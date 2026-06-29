@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  repoName    String
+  prNumber    Int
+  prTitle     String
+  prAuthor    String
+  verdict     String   // APPROVE | REQUEST_CHANGES | COMMENT
+  summary     String
+  issueCount  Int
+  createdAt   DateTime @default(now())
+  issues      Issue[]
+}
+
+model Issue {
+  id        String  @id @default(cuid())
+  reviewId  String
+  review    Review  @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  file      String
+  line      Int
+  severity  String  // critical | warning | suggestion
+  message   String
+}
