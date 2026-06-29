@@ -1,11 +1,9 @@
 const { App } = require('@octokit/app');
 
-// Ensure required environment variables are present
 if (!process.env.GITHUB_APP_ID || !process.env.GITHUB_PRIVATE_KEY) {
   console.warn("WARNING: GITHUB_APP_ID or GITHUB_PRIVATE_KEY is missing.");
 }
 
-// Initialize the GitHub App
 const app = new App({
   appId: process.env.GITHUB_APP_ID,
   // Handle newlines in the private key from .env file
@@ -34,7 +32,6 @@ async function getPRDiff(octokit, owner, repo, pull_number) {
     pull_number,
   });
   
-  // Format the diff to be easily readable by the AI
   return response.data.map(file => {
     return `File: ${file.filename}\nStatus: ${file.status}\nChanges:\n${file.patch}\n---\n`;
   }).join('\n');
@@ -50,7 +47,6 @@ async function getPRDiff(octokit, owner, repo, pull_number) {
  * @param {object} reviewData - The structured review from Gemini
  */
 async function postReviewComments(octokit, owner, repo, pull_number, commit_id, reviewData) {
-  // Post the overall summary as a regular issue comment
   if (reviewData.summary) {
     await octokit.request("POST /repos/{owner}/{repo}/issues/{issue_number}/comments", {
       owner,
@@ -60,12 +56,11 @@ async function postReviewComments(octokit, owner, repo, pull_number, commit_id, 
     });
   }
 
-  // Create an array of valid review comments for inline posting
-  const comments = [];
+  const validComments = [];
   if (reviewData.issues && Array.isArray(reviewData.issues)) {
     for (const issue of reviewData.issues) {
       if (issue.file && issue.line && issue.message) {
-        comments.push({
+        validComments.push({
           path: issue.file,
           line: issue.line,
           body: `**[${issue.severity.toUpperCase()}]** ${issue.message}`
@@ -74,8 +69,7 @@ async function postReviewComments(octokit, owner, repo, pull_number, commit_id, 
     }
   }
 
-  // If there are inline comments, create a PR review
-  if (comments.length > 0) {
+  if (validComments.length > 0) {
     let event = 'COMMENT';
     if (reviewData.verdict === 'APPROVE') event = 'APPROVE';
     if (reviewData.verdict === 'REQUEST_CHANGES') event = 'REQUEST_CHANGES';

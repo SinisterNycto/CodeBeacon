@@ -33,13 +33,11 @@ function verifyGitHubSignature(req) {
 async function handleWebhook(req, res) {
   const event = req.headers['x-github-event'];
   
-  // Verify signature
   if (!verifyGitHubSignature(req)) {
     console.error("Webhook signature verification failed.");
     return res.status(401).send('Unauthorized: Invalid signature');
   }
 
-  // We only care about pull requests being opened or synchronized (new commits)
   if (event === 'pull_request') {
     const action = req.body.action;
     if (action === 'opened' || action === 'synchronize') {
@@ -52,10 +50,8 @@ async function handleWebhook(req, res) {
         return res.status(400).send("No installation ID");
       }
 
-      // 1. Immediately return HTTP 200 to GitHub to prevent timeout
       res.status(200).send('Webhook received, processing review asynchronously.');
 
-      // 2. Process the AI review asynchronously
       processReview(installationId, repo.owner.login, repo.name, pr.number, pr.title, pr.user.login, pr.head.sha)
         .catch(err => console.error("Error processing review asynchronously:", err));
       
@@ -75,20 +71,16 @@ async function processReview(installationId, owner, repoName, prNumber, prTitle,
   try {
     const octokit = await getOctokit(installationId);
     
-    // Fetch Diff
     const diff = await getPRDiff(octokit, owner, repoName, prNumber);
     if (!diff.trim()) {
       console.log(`No diff found for ${owner}/${repoName}#${prNumber}. Skipping review.`);
       return;
     }
     
-    // Call Gemini
     const reviewResult = await reviewPRDiff(diff);
     
-    // Post Comments to GitHub
     await postReviewComments(octokit, owner, repoName, prNumber, commitSha, reviewResult);
     
-    // Save to Database
     const issueCount = Array.isArray(reviewResult.issues) ? reviewResult.issues.length : 0;
     
     const savedReview = await prisma.review.create({
