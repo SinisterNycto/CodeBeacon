@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const { getOctokit, getPRDiff, postReviewComments } = require('./github');
 const { reviewPRDiff } = require('./reviewer');
 const { prisma } = require('./db');
+const { sendAlertEmail } = require('./mailer');
 
 /**
  * Verify GitHub webhook signature using HMAC-SHA256
@@ -104,6 +105,32 @@ async function processReview(installationId, owner, repoName, prNumber, prTitle,
     });
 
     console.log(`Review saved to DB with ID: ${savedReview.id}`);
+
+    // Check for critical alerts
+    let hasCritical = false;
+    if (Array.isArray(reviewResult.issues)) {
+      hasCritical = reviewResult.issues.some(i => i.severity && i.severity.toLowerCase() === 'critical');
+    }
+
+    if (reviewResult.verdict === 'REQUEST_CHANGES' || hasCritical) {
+      const subject = `🚨 CRITICAL ALERT: PR #${prNumber} in ${owner}/${repoName}`;
+      const text = `A recent Pull Request requires immediate attention.\\n\\nRepository: ${owner}/${repoName}\\nPR Number: ${prNumber}\\nAuthor: ${prAuthor}\\nVerdict: ${reviewResult.verdict}\\nSummary: ${reviewResult.summary}\\nCritical Issues Found: ${hasCritical ? 'Yes' : 'No'}`;
+      const html = `
+        <h2>🚨 Pull Request Alert</h2>
+        <p>A recent Pull Request requires immediate attention.</p>
+        <ul>
+          <li><b>Repository:</b> ${owner}/${repoName}</li>
+          <li><b>PR Number:</b> #${prNumber}</li>
+          <li><b>Author:</b> ${prAuthor}</li>
+          <li><b>Verdict:</b> <span style="color:red">${reviewResult.verdict}</span></li>
+        </ul>
+        <p><b>Summary:</b> ${reviewResult.summary}</p>
+        <p><b>Critical Issues Found:</b> ${hasCritical ? 'Yes' : 'No'}</p>
+      `;
+      
+      // Fire and forget email (don't block the webhook)
+      sendAlertEmail(subject, text, html).catch(console.error);
+    }
   } catch (error) {
     console.error("Critical error in processReview:", error);
   }
