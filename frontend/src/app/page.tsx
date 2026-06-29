@@ -4,15 +4,20 @@ import { useEffect, useState } from 'react';
 import StatsRow from '@/components/StatsRow';
 import ReviewsTable from '@/components/ReviewsTable';
 import ReviewDetail from '@/components/ReviewDetail';
+import SeverityChart from '@/components/SeverityChart';
 import { Review, Stats } from '@/types';
-import { RefreshCw, Bot } from 'lucide-react';
+import { RefreshCw, Bot, Filter } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useMemo } from 'react';
 
 export default function Dashboard() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [selectedReview, setSelectedReview] = useState<Review | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  
+  const [verdictFilter, setVerdictFilter] = useState('ALL');
+  const [repoFilter, setRepoFilter] = useState('ALL');
 
   const fetchData = async () => {
     setIsRefreshing(true);
@@ -37,6 +42,29 @@ export default function Dashboard() {
     const interval = setInterval(fetchData, 30000); // 30 seconds auto-refresh
     return () => clearInterval(interval);
   }, []);
+
+  const uniqueRepos = useMemo(() => {
+    const repos = new Set(reviews.map(r => r.repoName));
+    return Array.from(repos);
+  }, [reviews]);
+
+  const filteredReviews = useMemo(() => {
+    return reviews.filter(r => {
+      const matchVerdict = verdictFilter === 'ALL' || r.verdict === verdictFilter;
+      const matchRepo = repoFilter === 'ALL' || r.repoName === repoFilter;
+      return matchVerdict && matchRepo;
+    });
+  }, [reviews, verdictFilter, repoFilter]);
+
+  const filteredStats = useMemo(() => {
+    return {
+      totalReviews: filteredReviews.length,
+      totalIssues: filteredReviews.reduce((acc, r) => acc + (r.issueCount || 0), 0),
+      critical: filteredReviews.reduce((acc, r) => acc + (r.issues?.filter(i => i.severity?.toLowerCase() === 'critical').length || 0), 0),
+      warning: filteredReviews.reduce((acc, r) => acc + (r.issues?.filter(i => i.severity?.toLowerCase() === 'warning').length || 0), 0),
+      suggestion: filteredReviews.reduce((acc, r) => acc + (r.issues?.filter(i => i.severity?.toLowerCase() === 'suggestion').length || 0), 0)
+    };
+  }, [filteredReviews]);
 
   return (
     <main className="min-h-screen bg-transparent text-white p-6 md:p-12 font-sans selection:bg-blue-500/30">
@@ -66,8 +94,56 @@ export default function Dashboard() {
           </button>
         </motion.header>
 
-        <StatsRow stats={stats} />
+        <StatsRow stats={filteredStats} />
         
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+          className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+        >
+          {/* Filters Panel */}
+          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-center">
+            <h3 className="text-lg font-outfit font-bold mb-4 text-white flex items-center gap-2">
+              <Filter className="w-5 h-5 text-blue-400" /> Filters
+            </h3>
+            <div className="flex flex-col gap-4">
+              <div>
+                <label className="text-sm text-slate-400 mb-1 block">Verdict</label>
+                <select 
+                  value={verdictFilter}
+                  onChange={(e) => setVerdictFilter(e.target.value)}
+                  className="w-full bg-slate-900/50 border border-slate-700 rounded-xl p-3 text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                >
+                  <option value="ALL">All Verdicts</option>
+                  <option value="APPROVE">Approved</option>
+                  <option value="REQUEST_CHANGES">Request Changes</option>
+                  <option value="COMMENT">Comment Only</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-sm text-slate-400 mb-1 block">Repository</label>
+                <select 
+                  value={repoFilter}
+                  onChange={(e) => setRepoFilter(e.target.value)}
+                  className="w-full bg-slate-900/50 border border-slate-700 rounded-xl p-3 text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                >
+                  <option value="ALL">All Repositories</option>
+                  {uniqueRepos.map(repo => (
+                    <option key={repo} value={repo}>{repo}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Chart Panel */}
+          <div className="glass-panel p-6 rounded-3xl lg:col-span-2">
+            <h3 className="text-lg font-outfit font-bold mb-4 text-white">Issue Severity Trends</h3>
+            <SeverityChart reviews={filteredReviews} />
+          </div>
+        </motion.div>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -77,7 +153,7 @@ export default function Dashboard() {
             Recent Reviews
             <span className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent"></span>
           </h2>
-          <ReviewsTable reviews={reviews} onSelectReview={setSelectedReview} />
+          <ReviewsTable reviews={filteredReviews} onSelectReview={setSelectedReview} />
         </motion.div>
       </div>
 
