@@ -1,11 +1,11 @@
 import { Stats } from '@/types';
 import { ShieldAlert, AlertTriangle, Lightbulb, GitPullRequest, Bug } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 
 export default function StatsRow({ stats }: { stats: Stats | null }) {
   if (!stats) return null;
 
-  const container = {
+  const container: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -55,7 +55,7 @@ export default function StatsRow({ stats }: { stats: Stats | null }) {
 }
 
 function StatCard({ title, value, icon, gradient }: { title: string, value: number, icon: React.ReactNode, gradient: string }) {
-  const item = {
+  const item: Variants = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
   };
