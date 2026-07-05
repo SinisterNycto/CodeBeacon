@@ -38,7 +38,7 @@ async function sendAlertEmail(subject, text, html, destinationEmail) {
 
     // Send mail with defined transport object
     let info = await transporter.sendMail({
-      from: '"ReviewPilot Alerts" <alerts@reviewpilot.local>', // sender address
+      from: '"CodeBeacon Alerts" <alerts@codebeacon.local>', // sender address
       to: toEmail, // list of receivers
       subject: subject, // Subject line
       text: text, // plain text body

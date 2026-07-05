@@ -1,4 +1,4 @@
-### PR Review Agent
+# CodeBeacon
 > An autonomous AI agent that reviews GitHub Pull Requests using Gemini 2.5 Flash. When a PR is opened, the agent analyzes the diff, posts inline code comments, and logs every review to a dashboard.
 
 ## 1. Features
