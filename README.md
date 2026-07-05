@@ -5,8 +5,9 @@
 * Automatically reviews new Pull Requests in your GitHub repository.
 * Posts an overall summary as a PR comment.
 * Posts specific, line-by-line inline code comments for bugs, security risks, bad practices, and performance issues.
-* Live dashboard showing all historical reviews, categorized by severity (Critical, Warning, Suggestion).
-* Auto-refreshing UI to see reviews as they come in.
+* **Multi-Tenant Dashboard**: Live dashboard showing historical reviews, categorized by severity (Critical, Warning, Suggestion).
+* **Clerk Authentication**: Secure user login and personalized settings.
+* **Dynamic Email Alerts**: Instantly routes critical security alerts to a custom email address configured by the user.
 
 ## 2. Architecture
 The application follows a robust 3-layer architecture. A Node.js backend acts as a GitHub App webhook receiver, securely processing payloads. It communicates with the Gemini API to analyze the PR diff and stores the results in a PostgreSQL database via Prisma. Finally, a separate Next.js frontend dashboard fetches and visualizes these reviews in real-time.
@@ -72,6 +73,5 @@ The application follows a robust 3-layer architecture. A Node.js backend acts as
 
 ## 6. Future Improvements
 * Redis job queue for handling high webhook volume without blocking
-* Slack/email notifications when critical issues are found
 * Weekly digest report of most common issues across all PRs
 * Fine-tuned model on company-specific coding standards
