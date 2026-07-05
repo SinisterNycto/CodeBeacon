@@ -2,9 +2,12 @@ import { NextResponse } from 'next/server';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const res = await fetch(`${API_URL}/api/stats`, {
+    const { searchParams } = new URL(request.url);
+    const author = searchParams.get('author') || '';
+
+    const res = await fetch(`${API_URL}/api/stats?author=${author}`, {
       cache: 'no-store'
     });
     
