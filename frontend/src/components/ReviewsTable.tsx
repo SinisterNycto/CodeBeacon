@@ -13,7 +13,7 @@ export default function ReviewsTable({
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-white/5 text-gray-400 text-sm border-b border-white/10 uppercase tracking-wider font-semibold">
+            <tr className="bg-slate-50 dark:bg-white/5 text-slate-500 dark:text-slate-400 text-sm border-b border-slate-200 dark:border-white/10 uppercase tracking-wider font-semibold">
               <th className="py-4 px-6 font-medium">PR Title</th>
               <th className="py-4 px-6 font-medium">Repository</th>
               <th className="py-4 px-6 font-medium">Author</th>
@@ -22,32 +22,32 @@ export default function ReviewsTable({
               <th className="py-4 px-6 font-medium">Reviewed</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/5">
+          <tbody className="divide-y divide-slate-200 dark:divide-white/5">
             {reviews.map((review) => (
               <tr 
                 key={review.id} 
                 onClick={() => onSelectReview(review)}
-                className="hover:bg-white/5 cursor-pointer transition-all duration-200 group"
+                className="hover:bg-slate-50 dark:hover:bg-white/5 cursor-pointer transition-all duration-200 group"
               >
-                <td className="py-4 px-6 text-white font-medium truncate max-w-[250px] group-hover:text-blue-300 transition-colors" title={review.prTitle}>
+                <td className="py-4 px-6 text-slate-800 dark:text-white font-medium truncate max-w-[250px] group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors" title={review.prTitle}>
                   #{review.prNumber} {review.prTitle}
                 </td>
-                <td className="py-4 px-6 text-gray-400">{review.repoName}</td>
-                <td className="py-4 px-6 text-gray-400">{review.prAuthor}</td>
+                <td className="py-4 px-6 text-slate-600 dark:text-slate-400">{review.repoName}</td>
+                <td className="py-4 px-6 text-slate-600 dark:text-slate-400">{review.prAuthor}</td>
                 <td className="py-4 px-6">
                   <VerdictBadge verdict={review.verdict} />
                 </td>
-                <td className="py-4 px-6 text-gray-400">
+                <td className="py-4 px-6 text-slate-600 dark:text-slate-400">
                   {review.issueCount}
                 </td>
-                <td className="py-4 px-6 text-gray-400 whitespace-nowrap text-sm">
+                <td className="py-4 px-6 text-slate-600 dark:text-slate-400 whitespace-nowrap text-sm">
                   {formatDistanceToNow(new Date(review.createdAt), { addSuffix: true })}
                 </td>
               </tr>
             ))}
             {reviews.length === 0 && (
               <tr>
-                <td colSpan={6} className="py-8 text-center text-gray-500">
+                <td colSpan={6} className="py-8 text-center text-slate-500">
                   No PR reviews found yet. Waiting for webhooks...
                 </td>
               </tr>

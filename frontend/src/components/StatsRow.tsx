@@ -64,15 +64,15 @@ function StatCard({ title, value, icon, gradient }: { title: string, value: numb
     <motion.div 
       variants={item}
       whileHover={{ y: -4, scale: 1.02 }}
-      className="glass-panel rounded-2xl p-5 flex items-center justify-between transition-all duration-300 hover:shadow-[0_8px_30px_rgba(255,255,255,0.05)] hover:border-white/20"
+      className="glass-panel rounded-2xl p-5 flex items-center justify-between transition-all duration-300 hover:shadow-md dark:hover:shadow-[0_8px_30px_rgba(255,255,255,0.05)] hover:border-slate-300 dark:hover:border-white/20"
     >
       <div>
-        <p className="text-xs text-gray-400 font-medium tracking-wider uppercase mb-1">{title}</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium tracking-wider uppercase mb-1">{title}</p>
         <p className={`text-4xl font-outfit font-bold text-gradient bg-gradient-to-r ${gradient}`}>
           {value}
         </p>
       </div>
-      <div className="p-3 bg-white/5 rounded-xl border border-white/10 shadow-inner">
+      <div className="p-3 bg-slate-50 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm dark:shadow-inner">
         {icon}
       </div>
     </motion.div>

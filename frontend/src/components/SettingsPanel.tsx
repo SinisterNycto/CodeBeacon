@@ -61,36 +61,36 @@ export default function SettingsPanel({ onClose }: { onClose: () => void }) {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/20 dark:bg-slate-950/80 backdrop-blur-sm"
       />
       <motion.div 
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className="relative w-full max-w-md bg-slate-900 border border-slate-700/50 rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden"
+        className="relative w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/50 rounded-3xl shadow-xl dark:shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden"
       >
-        <div className="flex items-center justify-between p-6 border-b border-slate-800">
-          <h2 className="text-xl font-outfit font-bold text-white flex items-center gap-2">
+        <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800">
+          <h2 className="text-xl font-outfit font-bold text-slate-900 dark:text-white flex items-center gap-2">
             Alert Settings
           </h2>
           <button 
             onClick={onClose}
-            className="p-2 hover:bg-white/5 rounded-xl transition-colors text-slate-400 hover:text-white"
+            className="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-xl transition-colors text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         <div className="p-6 flex flex-col gap-5">
-          <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
-            <p className="text-sm text-blue-200/80 leading-relaxed">
+          <div className="p-4 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 rounded-2xl">
+            <p className="text-sm text-blue-800 dark:text-blue-200/80 leading-relaxed">
               Link your GitHub username to automatically route PR alerts to your preferred email address.
             </p>
           </div>
 
           <div>
-            <label className="text-sm font-medium text-slate-300 mb-1.5 flex items-center gap-2">
-              <User className="w-4 h-4 text-slate-400" />
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-2">
+              <User className="w-4 h-4 text-slate-500 dark:text-slate-400" />
               GitHub Username
             </label>
             <input 
@@ -98,20 +98,20 @@ export default function SettingsPanel({ onClose }: { onClose: () => void }) {
               placeholder="e.g. SinisterNycto"
               value={githubUsername}
               onChange={(e) => setGithubUsername(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm"
             />
           </div>
 
           <div>
-            <label className="text-sm font-medium text-slate-300 mb-1.5 flex items-center gap-2">
-              <Mail className="w-4 h-4 text-slate-400" />
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-2">
+              <Mail className="w-4 h-4 text-slate-500 dark:text-slate-400" />
               Alert Email Address
             </label>
             <input 
               type="email"
               value={alertEmail}
               onChange={(e) => setAlertEmail(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm"
             />
           </div>
 

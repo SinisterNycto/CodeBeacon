@@ -13,6 +13,7 @@ const outfit = Outfit({
 });
 
 import { ClerkProvider } from '@clerk/nextjs'
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "ReviewPilot | AI PR Reviewer",
@@ -29,8 +30,18 @@ export default function RootLayout({
       <html
         lang="en"
         className={`${inter.variable} ${outfit.variable} h-full antialiased`}
+        suppressHydrationWarning
       >
-        <body className="min-h-full flex flex-col font-sans">{children}</body>
+        <body className="min-h-full flex flex-col font-sans transition-colors duration-300 dark:bg-slate-950 dark:text-slate-50 bg-slate-50 text-slate-900">
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </body>
       </html>
     </ClerkProvider>
   );

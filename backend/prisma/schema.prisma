@@ -33,7 +33,7 @@ model Issue {
 model User {
   id             String   @id @default(cuid())
   clerkId        String   @unique
-  githubUsername String   @unique
+  githubUsername String
   alertEmail     String
   createdAt      DateTime @default(now())
 }

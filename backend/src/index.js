@@ -26,7 +26,11 @@ app.post('/api/webhook', handleWebhook);
 
 // API Route for the Dashboard to fetch reviews
 app.get('/api/reviews', async (req, res) => {
+  const { author } = req.query;
+  if (!author) return res.json([]);
+
   const reviews = await prisma.review.findMany({
+    where: { prAuthor: { equals: author, mode: 'insensitive' } },
     orderBy: { createdAt: 'desc' },
     include: { issues: true },
     take: 50
@@ -37,12 +41,19 @@ app.get('/api/reviews', async (req, res) => {
 
 // API Route for Dashboard stats
 app.get('/api/stats', async (req, res) => {
-  const totalReviews = await prisma.review.count();
-  const totalIssues = await prisma.issue.count();
+  const { author } = req.query;
+  if (!author) {
+    return res.json({ totalReviews: 0, totalIssues: 0, critical: 0, warning: 0, suggestion: 0 });
+  }
+
+  const reviewWhere = { prAuthor: { equals: author, mode: 'insensitive' } };
+
+  const totalReviews = await prisma.review.count({ where: reviewWhere });
+  const totalIssues = await prisma.issue.count({ where: { review: reviewWhere } });
   
-  const critical = await prisma.issue.count({ where: { severity: 'critical' } });
-  const warning = await prisma.issue.count({ where: { severity: 'warning' } });
-  const suggestion = await prisma.issue.count({ where: { severity: 'suggestion' } });
+  const critical = await prisma.issue.count({ where: { severity: 'critical', review: reviewWhere } });
+  const warning = await prisma.issue.count({ where: { severity: 'warning', review: reviewWhere } });
+  const suggestion = await prisma.issue.count({ where: { severity: 'suggestion', review: reviewWhere } });
 
   res.json({
     totalReviews,
