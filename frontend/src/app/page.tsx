@@ -26,7 +26,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (isSignedIn && user?.id) {
-      fetch(`/api/users/${user.id}`)
+      fetch(`/api/users?clerkId=${user.id}`)
         .then(res => res.ok ? res.json() : null)
         .then(data => {
           if (data?.githubUsername) {
