@@ -1,77 +1,92 @@
-# CodeBeacon
-> An autonomous AI agent that reviews GitHub Pull Requests using Gemini 2.5 Flash. When a PR is opened, the agent analyzes the diff, posts inline code comments, and logs every review to a dashboard.
+<div align="center">
+  <h1>🚀 CodeBeacon</h1>
+  <p><strong>Autonomous Event-Driven AI Code Reviewer</strong></p>
+  <a href="https://code-beacon.vercel.app">Live Demo</a> • <a href="https://github.com/apps/codebeacon-by-swastik">Install GitHub App</a>
+</div>
 
-## 1. Features
-* Automatically reviews new Pull Requests in your GitHub repository.
-* Posts an overall summary as a PR comment.
-* Posts specific, line-by-line inline code comments for bugs, security risks, bad practices, and performance issues.
-* **Multi-Tenant Dashboard**: Live dashboard showing historical reviews, categorized by severity (Critical, Warning, Suggestion).
-* **Clerk Authentication**: Secure user login and personalized settings.
-* **Dynamic Email Alerts**: Instantly routes critical security alerts to a custom email address configured by the user.
+<br />
 
-## 2. Architecture
-The application follows a robust 3-layer architecture. A Node.js backend acts as a GitHub App webhook receiver, securely processing payloads. It communicates with the Gemini API to analyze the PR diff and stores the results in a PostgreSQL database via Prisma. Finally, a separate Next.js frontend dashboard fetches and visualizes these reviews in real-time.
+CodeBeacon is a production-grade, event-driven autonomous AI agent that reviews GitHub Pull Requests in real-time. Powered by **Google Gemini 2.5 Flash**, it intercepts Webhooks via a custom Node.js backend, analyzes code diffs for security risks and anti-patterns, and posts line-by-line inline comments directly into GitHub CI pipelines. 
 
-## 3. Tech Stack
+## ✨ Key Features
+
+- ⚡ **Event-Driven Architecture:** Listens for `pull_request.opened` webhooks in the background and responds instantly to prevent timeout blocks.
+- 🧠 **Semantic AI Analysis:** Streams PR diff chunks to Gemini 2.5 Flash for deep context-aware code review.
+- 🎯 **Inline GitHub Feedback:** Posts precise, line-by-line inline comments on the exact files and lines where issues occur.
+- 📊 **Multi-Tenant Dashboard:** A fully isolated Next.js frontend where users can track historical reviews, categorized by severity (Critical, Warning, Suggestion).
+- 🔒 **Secure Auth & Routing:** Uses Clerk for seamless OAuth login and PostgreSQL (via Prisma) for strict row-level data isolation.
+- 📧 **Real-time Email Alerts:** Instantly routes Critical Security alerts to a custom email address configured by the PR author.
+
+## 🛠 Tech Stack
 
 | Layer | Technology |
 | --- | --- |
-| **Frontend** | Next.js 14 (App Router), TypeScript, Tailwind CSS |
-| **Backend** | Node.js, Express, `express-async-errors` |
-| **AI** | Google Gemini API (`gemini-2.5-flash`), `@google/generative-ai` |
+| **Frontend UI** | Next.js 14 (App Router), TypeScript, Tailwind CSS, Framer Motion |
+| **Backend API** | Node.js, Express.js, Webhooks, Nodemailer |
+| **Authentication** | Clerk Auth (Google & GitHub OAuth) |
+| **AI Engine** | Google Gemini API (`gemini-2.5-flash`) |
 | **Database** | PostgreSQL, Prisma ORM |
 | **GitHub Integration** | GitHub Apps API, Octokit (`@octokit/app`, `@octokit/rest`) |
-| **Deployment** | Docker, Docker Compose, GitHub Actions |
 
-## 4. Setup & Running locally
+## 🚀 Production Deployment
 
-### Prerequisites
-* Node.js v18+ (if running manually)
-* Docker and Docker Compose (if running via Docker container)
+CodeBeacon is designed for cloud-native deployment:
+- **Frontend:** Deployed globally on [Vercel](https://vercel.com).
+- **Backend:** Hosted on [Render](https://render.com) as a background web service listening for GitHub Webhooks.
+- **Database:** Hosted PostgreSQL instance (e.g. Supabase, Neon).
 
-### Steps
-1. Clone the repository:
-   ```bash
-   git clone <repo-url>
-   cd <repo-dir>
-   ```
+## 💻 Local Setup & Development
 
-2. Set up environment variables:
-   ```bash
-   cp .env.example .env
-   # Edit .env and fill in your Gemini API Key, GitHub App credentials, etc.
-   ```
+### 1. Environment Variables
+Create a `.env` file in both the `/backend` and `/frontend` directories.
 
-3. Run the application:
+**Backend `.env`**
+```env
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/codebeacon"
 
-**Option A: Using Docker (Recommended)**
-   ```bash
-   docker-compose up --build
-   ```
+# GitHub App Credentials
+APP_ID="your_github_app_id"
+PRIVATE_KEY="-----BEGIN RSA PRIVATE KEY-----\n..."
+WEBHOOK_SECRET="your_custom_webhook_secret"
 
-**Option B: Running Manually (Without Docker)**
-   Requires Node.js v18+ installed.
-   ```bash
-   # Terminal 1: Start Backend
-   cd backend
-   npm install
-   npm run dev
+# Gemini AI
+GEMINI_API_KEY="your_google_gemini_key"
 
-   # Terminal 2: Start Frontend
-   cd frontend
-   npm install
-   npm run dev
-   ```
+# Email Alerts
+EMAIL_USER="your_email@gmail.com"
+EMAIL_PASS="your_app_password"
+```
 
-4. The backend will be available at `http://localhost:3001` and the frontend dashboard at `http://localhost:3000`. Set your GitHub App's webhook URL to `http://your-ngrok-url/api/webhook`.
+**Frontend `.env.local`**
+```env
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_test_..."
+CLERK_SECRET_KEY="sk_test_..."
+NEXT_PUBLIC_GITHUB_APP_URL="https://github.com/apps/codebeacon-by-swastik"
+```
 
-## 5. How it works
-1. **PR opened:** A developer opens a Pull Request on a repository where the GitHub App is installed.
-2. **Webhook fires:** GitHub sends a `pull_request` event payload to the Node.js backend. The backend immediately responds with HTTP 200 to prevent timeouts.
-3. **Gemini reviews:** The backend fetches the PR diff via Octokit and sends it to the Gemini API, asking for a structured JSON code review.
-4. **Comments posted + dashboard updated:** The backend uses Octokit to post the summary and inline comments back to the PR on GitHub, and then saves the review to the PostgreSQL database which updates the Next.js dashboard.
+### 2. Run the Application
 
-## 6. Future Improvements
-* Redis job queue for handling high webhook volume without blocking
-* Weekly digest report of most common issues across all PRs
-* Fine-tuned model on company-specific coding standards
+```bash
+# Terminal 1: Start the Backend Webhook Listener
+cd backend
+npm install
+npm run dev
+
+# Terminal 2: Start the Next.js Dashboard
+cd frontend
+npm install
+npm run dev
+```
+
+### 3. Testing Webhooks Locally
+To test GitHub Webhooks locally, use [ngrok](https://ngrok.com/) to expose your `localhost:3001` port:
+```bash
+ngrok http 3001
+```
+Then paste the generated Ngrok URL into your GitHub App's Webhook settings (e.g., `https://<ngrok-url>.ngrok-free.app/api/webhook`).
+
+## 🔮 Future Roadmap
+* Redis job queue for handling high webhook volume without blocking.
+* Fine-tuned model on company-specific coding standards.
+* Weekly digest report of most common issues across all PRs.
