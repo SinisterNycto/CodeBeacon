@@ -53,6 +53,34 @@ app.get('/api/stats', async (req, res) => {
   });
 });
 
+// API Route to save user preferences
+app.post('/api/users', async (req, res) => {
+  const { clerkId, githubUsername, alertEmail } = req.body;
+  if (!clerkId || !githubUsername || !alertEmail) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  const user = await prisma.user.upsert({
+    where: { clerkId },
+    update: { githubUsername, alertEmail },
+    create: { clerkId, githubUsername, alertEmail }
+  });
+
+  res.json(user);
+});
+
+// API Route to fetch user preferences
+app.get('/api/users/:clerkId', async (req, res) => {
+  const { clerkId } = req.params;
+  const user = await prisma.user.findUnique({
+    where: { clerkId }
+  });
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+  res.json(user);
+});
+
 // Basic healthcheck
 app.get('/', (req, res) => {
   res.send('PR Review Agent Backend is running');

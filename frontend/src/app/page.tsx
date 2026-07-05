@@ -6,15 +6,19 @@ import ReviewsTable from '@/components/ReviewsTable';
 import ReviewDetail from '@/components/ReviewDetail';
 import SeverityChart from '@/components/SeverityChart';
 import { Review, Stats } from '@/types';
-import { RefreshCw, Bot, Filter } from 'lucide-react';
+import { RefreshCw, Bot, Filter, Settings } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMemo } from 'react';
+import { SignInButton, UserButton, useUser } from '@clerk/nextjs';
+import SettingsPanel from '@/components/SettingsPanel';
 
 export default function Dashboard() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [selectedReview, setSelectedReview] = useState<Review | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const { isSignedIn } = useUser();
   
   const [verdictFilter, setVerdictFilter] = useState('ALL');
   const [repoFilter, setRepoFilter] = useState('ALL');
@@ -84,14 +88,39 @@ export default function Dashboard() {
               <p className="text-blue-100/60 mt-1 font-medium tracking-wide">Autonomous GitHub Code Review Agent</p>
             </div>
           </div>
-          <button 
-            onClick={fetchData}
-            disabled={isRefreshing}
-            className="flex items-center gap-2 px-5 py-2.5 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 rounded-xl transition-all text-sm font-semibold tracking-wide disabled:opacity-50 shadow-lg active:scale-95"
-          >
-            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-blue-400' : 'text-blue-300'}`} />
-            Refresh
-          </button>
+          
+          <div className="flex items-center gap-4">
+            {!isSignedIn && (
+              <SignInButton mode="modal">
+                <button className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 rounded-xl text-white font-semibold transition-all shadow-[0_0_15px_rgba(59,130,246,0.5)]">
+                  Sign In
+                </button>
+              </SignInButton>
+            )}
+            
+            {isSignedIn && (
+              <>
+                <button 
+                  onClick={() => setShowSettings(true)}
+                  className="p-2.5 bg-white/5 border border-white/10 hover:bg-white/10 rounded-xl transition-all shadow-lg active:scale-95"
+                  title="Settings"
+                >
+                  <Settings className="w-5 h-5 text-blue-300" />
+                </button>
+                <button 
+                  onClick={fetchData}
+                  disabled={isRefreshing}
+                  className="flex items-center gap-2 px-5 py-2.5 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 rounded-xl transition-all text-sm font-semibold tracking-wide disabled:opacity-50 shadow-lg active:scale-95"
+                >
+                  <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-blue-400' : 'text-blue-300'}`} />
+                  Refresh
+                </button>
+                <div className="bg-white/5 p-1.5 rounded-full border border-white/10">
+                  <UserButton appearance={{ elements: { userButtonAvatarBox: "w-9 h-9" } }} />
+                </div>
+              </>
+            )}
+          </div>
         </motion.header>
 
         <StatsRow stats={filteredStats} />
@@ -163,6 +192,10 @@ export default function Dashboard() {
             review={selectedReview} 
             onClose={() => setSelectedReview(null)} 
           />
+        )}
+        
+        {showSettings && (
+          <SettingsPanel onClose={() => setShowSettings(false)} />
         )}
       </AnimatePresence>
     </main>

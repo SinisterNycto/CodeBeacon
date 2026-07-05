@@ -5,8 +5,9 @@ const nodemailer = require('nodemailer');
  * @param {string} subject - The subject of the email
  * @param {string} text - The plain text body
  * @param {string} html - The HTML body
+ * @param {string} destinationEmail - The email address to send the alert to
  */
-async function sendAlertEmail(subject, text, html) {
+async function sendAlertEmail(subject, text, html, destinationEmail) {
   try {
     let transporter;
 
@@ -33,19 +34,19 @@ async function sendAlertEmail(subject, text, html) {
       });
     }
 
-    const destinationEmail = process.env.ALERT_DESTINATION_EMAIL || "engineering-manager@company.com";
+    const toEmail = destinationEmail || process.env.ALERT_DESTINATION_EMAIL || "engineering-manager@company.com";
 
     // Send mail with defined transport object
     let info = await transporter.sendMail({
       from: '"ReviewPilot Alerts" <alerts@reviewpilot.local>', // sender address
-      to: destinationEmail, // list of receivers
+      to: toEmail, // list of receivers
       subject: subject, // Subject line
       text: text, // plain text body
       html: html, // html body
     });
 
     console.log("----------------------------------------");
-    console.log(`[Email Alert Sent] ${subject} -> ${destinationEmail}`);
+    console.log(`[Email Alert Sent] ${subject} -> ${toEmail}`);
     if (!process.env.SMTP_USER) {
       console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
     }

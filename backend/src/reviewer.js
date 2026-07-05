@@ -1,6 +1,5 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-// Ensure API key is present
 if (!process.env.GEMINI_API_KEY) {
   console.warn("WARNING: GEMINI_API_KEY is missing.");
 }
@@ -27,14 +26,14 @@ Be constructive, specific, and concise. Do not praise trivially. Only report act
 
 async function reviewPRDiff(diffText) {
   try {
-    const model = genAI.getGenerativeModel({ 
+    const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash",
       systemInstruction: SYSTEM_PROMPT
     });
 
     const result = await model.generateContent(diffText);
     const responseText = result.response.text();
-    
+
     // Attempt to parse JSON. Handle possible markdown fences if the model disobeys
     const cleanText = responseText.replace(/```json/gi, '').replace(/```/g, '').trim();
     return JSON.parse(cleanText);

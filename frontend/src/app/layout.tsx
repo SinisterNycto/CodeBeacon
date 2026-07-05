@@ -12,6 +12,8 @@ const outfit = Outfit({
   subsets: ["latin"],
 });
 
+import { ClerkProvider } from '@clerk/nextjs'
+
 export const metadata: Metadata = {
   title: "ReviewPilot | AI PR Reviewer",
   description: "Autonomous GitHub Code Review Agent powered by Gemini",
@@ -23,11 +25,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${inter.variable} ${outfit.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col font-sans">{children}</body>
-    </html>
+    <ClerkProvider>
+      <html
+        lang="en"
+        className={`${inter.variable} ${outfit.variable} h-full antialiased`}
+      >
+        <body className="min-h-full flex flex-col font-sans">{children}</body>
+      </html>
+    </ClerkProvider>
   );
 }

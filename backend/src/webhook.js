@@ -128,8 +128,27 @@ async function processReview(installationId, owner, repoName, prNumber, prTitle,
         <p><b>Critical Issues Found:</b> ${hasCritical ? 'Yes' : 'No'}</p>
       `;
       
+      // Lookup user preference from database
+      let customAlertEmail = null;
+      try {
+        const user = await prisma.user.findFirst({ 
+          where: { 
+            githubUsername: { 
+              equals: owner, 
+              mode: 'insensitive' 
+            } 
+          } 
+        });
+        if (user && user.alertEmail) {
+          customAlertEmail = user.alertEmail;
+          console.log(`Routing alert to custom email for user ${owner}`);
+        }
+      } catch (err) {
+        console.error("Error looking up custom alert email:", err);
+      }
+      
       // Fire and forget email (don't block the webhook)
-      sendAlertEmail(subject, text, html).catch(console.error);
+      sendAlertEmail(subject, text, html, customAlertEmail).catch(console.error);
     }
   } catch (error) {
     console.error("Critical error in processReview:", error);

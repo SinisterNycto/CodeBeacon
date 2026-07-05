@@ -81,7 +81,7 @@ async function postReviewComments(octokit, owner, repo, pull_number, commit_id, 
         pull_number,
         commit_id,
         event,
-        comments
+        comments: validComments
       });
     } catch (err) {
       console.error("Failed to post inline PR review. Falling back to simple comment.", err.message);
