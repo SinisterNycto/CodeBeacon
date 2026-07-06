@@ -121,7 +121,7 @@ async function processReview(installationId, owner, repoName, prNumber, prTitle,
         <ul>
           <li><b>Repository:</b> ${owner}/${repoName}</li>
           <li><b>PR Number:</b> #${prNumber}</li>
-          <li><b>Author:</b> ${prAuthor} (DB users found: ${users ? users.length : "ERROR"})</li>
+          <li><b>Author:</b> ${prAuthor}</li>
           <li><b>Verdict:</b> <span style="color:red">${reviewResult.verdict}</span></li>
         </ul>
         <p><b>Summary:</b> ${reviewResult.summary}</p>
