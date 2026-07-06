@@ -121,7 +121,7 @@ async function processReview(installationId, owner, repoName, prNumber, prTitle,
         <ul>
           <li><b>Repository:</b> ${owner}/${repoName}</li>
           <li><b>PR Number:</b> #${prNumber}</li>
-          <li><b>Author:</b> ${prAuthor}</li>
+          <li><b>Author:</b> ${prAuthor} (DB users found: ${users ? users.length : "ERROR"})</li>
           <li><b>Verdict:</b> <span style="color:red">${reviewResult.verdict}</span></li>
         </ul>
         <p><b>Summary:</b> ${reviewResult.summary}</p>
@@ -148,12 +148,14 @@ async function processReview(installationId, owner, repoName, prNumber, prTitle,
           }
         } else {
           // Fallback if no user found
-          sendAlertEmail(subject, text, html, null).catch(console.error);
+          const debugHtml = html + `<br><hr><p><small><b>DEBUG INFO:</b> Database lookup for PR Author '<b>${prAuthor}</b>' returned 0 results. Falling back to default admin email.</small></p>`;
+          sendAlertEmail(subject, text, debugHtml, null).catch(console.error);
         }
       } catch (err) {
         console.error("Error looking up custom alert emails:", err);
         // Fallback on error
-        sendAlertEmail(subject, text, html, null).catch(console.error);
+        const debugHtml = html + `<br><hr><p><small><b>DEBUG INFO:</b> Prisma Database query CRASHED (check Render logs). Falling back to default admin email.</small></p>`;
+        sendAlertEmail(subject, text, debugHtml, null).catch(console.error);
       }
     }
   } catch (error) {
