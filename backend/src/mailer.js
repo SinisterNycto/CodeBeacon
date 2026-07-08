@@ -1,7 +1,9 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 /**
- * Sends an email alert using Ethereal Mail (fake SMTP service for testing)
+ * Sends an email alert using Resend API
  * @param {string} subject - The subject of the email
  * @param {string} text - The plain text body
  * @param {string} html - The HTML body
@@ -9,51 +11,34 @@ const nodemailer = require('nodemailer');
  */
 async function sendAlertEmail(subject, text, html, destinationEmail) {
   try {
-    let transporter;
-
-    // Use real SMTP if credentials are provided in .env
-    if (process.env.SMTP_USER && process.env.SMTP_PASS) {
-      transporter = nodemailer.createTransport({
-        service: 'gmail', // You can change this to sendgrid, ses, etc.
-        auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
-        },
-      });
-    } else {
-      // Fallback to Ethereal (fake test emails) for local development
-      let testAccount = await nodemailer.createTestAccount();
-      transporter = nodemailer.createTransport({
-        host: "smtp.ethereal.email",
-        port: 587,
-        secure: false,
-        auth: {
-          user: testAccount.user,
-          pass: testAccount.pass,
-        },
-      });
+    const toEmail = destinationEmail || process.env.ALERT_DESTINATION_EMAIL || "engineering-manager@company.com";
+    
+    if (!process.env.RESEND_API_KEY) {
+      console.warn("WARNING: RESEND_API_KEY is not set. Check your Render Environment Variables.");
+      console.log(`[Mock Email] To: ${toEmail} | Subject: ${subject}`);
+      return;
     }
 
-    const toEmail = destinationEmail || process.env.ALERT_DESTINATION_EMAIL || "engineering-manager@company.com";
-
-    // Send mail with defined transport object
-    let info = await transporter.sendMail({
-      from: '"CodeBeacon Alerts" <alerts@codebeacon.local>', // sender address
-      to: toEmail, // list of receivers
-      subject: subject, // Subject line
-      text: text, // plain text body
-      html: html, // html body
+    // Send the email via Resend
+    const { data, error } = await resend.emails.send({
+      from: 'CodeBeacon Alerts <onboarding@resend.dev>', // Resend free tier requires this specific sender
+      to: [toEmail],
+      subject: subject,
+      html: html,
+      text: text,
     });
 
-    console.log("----------------------------------------");
-    console.log(`[Email Alert Sent] ${subject} -> ${toEmail}`);
-    if (!process.env.SMTP_USER) {
-      console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    if (error) {
+      console.error("Resend API Error:", error);
+      return;
     }
+
+    console.log("----------------------------------------");
+    console.log(`[Resend Email Sent] ${subject} -> ${toEmail} | ID: ${data.id}`);
     console.log("----------------------------------------");
 
   } catch (error) {
-    console.error("Failed to send alert email:", error);
+    console.error("Failed to send alert email via Resend:", error);
   }
 }
 
