@@ -72,7 +72,7 @@ The application follows a robust 3-layer architecture. A Node.js backend acts as
 
 ## 6. Future Improvements
 * Redis job queue for handling high webhook volume without blocking
-* Integrate Slack webhooks for team-wide critical issue notifications (Email alerts are currently implemented)
+* Integrate Slack webhooks for team-wide critical issue notifications
 * Weekly digest report of most common issues across all PRs
 * Fine-tuned model on company-specific coding standards
 

@@ -1,9 +1,10 @@
 "use client";
 
 import { motion } from 'framer-motion';
-import { CheckCircle2, ArrowRight, Terminal } from 'lucide-react';
+import { CheckCircle2, ArrowRight, Terminal, Radio } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth, SignInButton } from '@clerk/nextjs';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export default function LandingPage() {
   const { userId, isLoaded } = useAuth();
@@ -11,11 +12,18 @@ export default function LandingPage() {
   return (
     <main className="min-h-screen bg-[#F4F4F0] text-slate-900 font-sans dark:bg-slate-950 dark:text-slate-50 transition-colors duration-300 overflow-x-hidden">
       <nav className="max-w-7xl mx-auto px-6 py-8 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="font-[family-name:var(--font-outfit)] font-bold text-2xl tracking-tight text-[#2A4D3E] dark:text-emerald-400">CodeBeacon</span>
-        </div>
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-[#2A4D3E] to-emerald-600 shadow-[0_0_15px_rgba(16,185,129,0.3)] dark:shadow-[0_0_20px_rgba(52,211,153,0.4)]">
+            <Radio className="w-5 h-5 text-white animate-pulse" />
+            <div className="absolute inset-0 rounded-xl bg-emerald-400/30 animate-ping" style={{ animationDuration: '3s' }}></div>
+          </div>
+          <span className="font-[family-name:var(--font-outfit)] font-extrabold text-2xl tracking-tight text-slate-900 dark:text-white transition-all">
+            Code<span className="text-[#2A4D3E] dark:text-emerald-400">Beacon</span>
+          </span>
+        </Link>
         
         <div className="hidden md:flex items-center gap-8">
+          <ThemeToggle />
           {isLoaded && userId ? (
             <Link href="/dashboard" className="text-sm font-semibold border-b-2 border-[#2A4D3E] dark:border-emerald-400 pb-1">Dashboard</Link>
           ) : (
@@ -88,32 +96,32 @@ export default function LandingPage() {
           transition={{ delay: 0.3 }}
           className="mt-16 max-w-3xl mx-auto text-left"
         >
-          <div className="bg-[#0f172a] rounded-2xl shadow-2xl border border-slate-800 overflow-hidden">
+          <div className="bg-white dark:bg-[#0f172a] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
             {/* Mock Window Header */}
-            <div className="bg-[#1e293b] px-4 py-3 flex items-center gap-2 border-b border-slate-800/50">
+            <div className="bg-slate-50 dark:bg-[#1e293b] px-4 py-3 flex items-center gap-2 border-b border-slate-200 dark:border-slate-800/50">
               <div className="flex gap-1.5">
                 <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
                 <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
                 <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
               </div>
-              <div className="mx-auto text-[11px] font-medium text-slate-400 flex items-center gap-2">
+              <div className="mx-auto text-[11px] font-medium text-slate-500 dark:text-slate-400 flex items-center gap-2">
                 <Terminal className="w-3 h-3" /> codebeacon-worker
               </div>
             </div>
             {/* Terminal Content */}
-            <div className="p-6 font-mono text-sm leading-relaxed text-slate-300">
-              <div className="text-emerald-400">➜ <span className="text-blue-400 font-semibold">[CodeBeacon]</span> Listening for GitHub Webhooks on /api/webhook...</div>
-              <div className="mt-2 text-slate-400">2026-07-06T14:32:01.002Z - Event received: pull_request.opened</div>
-              <div className="mt-2 text-emerald-400">➜ <span className="text-blue-400 font-semibold">[CodeBeacon]</span> Repository: SinisterNycto/upi-offline-mesh</div>
+            <div className="p-6 font-mono text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+              <div className="text-emerald-600 dark:text-emerald-400">➜ <span className="text-blue-600 dark:text-blue-400 font-semibold">[CodeBeacon]</span> Listening for GitHub Webhooks on /api/webhook...</div>
+              <div className="mt-2 text-slate-500 dark:text-slate-400">2026-07-06T14:32:01.002Z - Event received: pull_request.opened</div>
+              <div className="mt-2 text-emerald-600 dark:text-emerald-400">➜ <span className="text-blue-600 dark:text-blue-400 font-semibold">[CodeBeacon]</span> Repository: SinisterNycto/upi-offline-mesh</div>
               <div className="mt-1">Extracting diff (3 files changed, +142 -12 lines)...</div>
-              <div className="mt-2 flex items-center gap-2 text-purple-400">
-                <span className="animate-pulse">⚡</span> Sending payload to Gemini 2.5 Flash API...
+              <div className="mt-2 flex items-center gap-2 text-purple-600 dark:text-purple-400">
+                <span className="animate-pulse">[SYSTEM]</span> Sending payload to Gemini 2.5 Flash API...
               </div>
-              <div className="mt-4 border-l-2 border-orange-500 pl-4 py-1 text-orange-200 bg-orange-500/10 rounded-r-md">
-                <span className="font-bold text-orange-400">⚠️ Critical Alert:</span> Zero-trust encryption payload vulnerability detected in `Encryption.ts` (Line 42). Missing authentication tag verification.
+              <div className="mt-4 border-l-2 border-orange-500 pl-4 py-1 text-orange-800 dark:text-orange-200 bg-orange-50 dark:bg-orange-500/10 rounded-r-md">
+                <span className="font-bold text-orange-600 dark:text-orange-400">CRITICAL ALERT:</span> Zero-trust encryption payload vulnerability detected in `Encryption.ts` (Line 42). Missing authentication tag verification.
               </div>
-              <div className="mt-4 text-emerald-400">➜ <span className="text-blue-400 font-semibold">[CodeBeacon]</span> Injecting inline review comment into GitHub PR...</div>
-              <div className="mt-1 text-green-400 font-semibold">✓ Review successfully posted in 1.4s. Analysis complete.</div>
+              <div className="mt-4 text-emerald-600 dark:text-emerald-400">➜ <span className="text-blue-600 dark:text-blue-400 font-semibold">[CodeBeacon]</span> Injecting inline review comment into GitHub PR...</div>
+              <div className="mt-1 text-green-600 dark:text-green-400 font-semibold">[SUCCESS] Review successfully posted in 1.4s. Analysis complete.</div>
             </div>
           </div>
         </motion.div>
@@ -123,48 +131,81 @@ export default function LandingPage() {
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="max-w-5xl mx-auto px-6 mt-32 pb-24"
+        className="max-w-4xl mx-auto px-6 mt-32 pb-24"
       >
-        <div className="bg-white dark:bg-slate-900 rounded-[2rem] p-8 shadow-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">System Architecture</span>
-              <h2 className="text-3xl font-[family-name:var(--font-outfit)] font-bold text-slate-900 dark:text-white mt-1">Automated Pipeline</h2>
-            </div>
-          </div>
+        <div className="text-center mb-16">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-[#2A4D3E] dark:text-emerald-400">System Architecture</span>
+          <h2 className="text-3xl md:text-4xl font-[family-name:var(--font-outfit)] font-extrabold text-slate-900 dark:text-white mt-2">Data Flow Pipeline</h2>
+        </div>
+        
+        <div className="relative">
+          {/* Vertical Line */}
+          <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[#2A4D3E]/30 dark:via-emerald-500/30 to-transparent -translate-x-1/2"></div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-            <div className="absolute top-1/2 left-0 w-full h-px bg-slate-200 dark:bg-slate-800 -z-10 hidden md:block"></div>
-            
-            <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 relative">
-              <div className="flex justify-between items-start mb-4">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Step 1</span>
-                <CheckCircle2 className="w-5 h-5 text-[#2A4D3E] dark:text-emerald-400" />
+          <div className="flex flex-col gap-12">
+            {/* Step 1 */}
+            <div className="relative flex flex-col md:flex-row items-center w-full group">
+              <div className="absolute left-8 md:left-1/2 w-4 h-4 rounded-full bg-[#2A4D3E] dark:bg-emerald-400 border-4 border-[#F4F4F0] dark:border-slate-950 -translate-x-1/2 z-10 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
+              <div className="md:w-1/2 md:pr-12 pl-16 md:pl-0 w-full md:text-right">
+                <div className="bg-white dark:bg-[#0f172a] p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 transition-transform group-hover:-translate-y-1 relative">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2 block">Step 1</span>
+                  <h3 className="font-[family-name:var(--font-outfit)] font-bold text-xl mb-2 text-slate-900 dark:text-white">Webhook Interception</h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">Securely verifies HMAC-SHA256 signatures and extracts PR metadata in real-time from GitHub.</p>
+                </div>
               </div>
-              <h3 className="font-[family-name:var(--font-outfit)] font-bold text-xl mb-2 text-slate-900 dark:text-white">Webhook Interception</h3>
-              <p className="text-sm text-slate-500">Securely verifies HMAC-SHA256 signatures and extracts PR metadata in real-time.</p>
+              <div className="md:w-1/2 hidden md:block"></div>
             </div>
 
-            <div className="bg-[#fcfaf5] dark:bg-orange-950/20 p-6 rounded-2xl border border-[#e8dfc7] dark:border-orange-900/30 relative shadow-sm">
-              <div className="flex justify-between items-start mb-4">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Step 2</span>
-                <div className="w-5 h-5 rounded-full border-2 border-orange-400 border-t-transparent animate-spin"></div>
+            {/* Step 2 */}
+            <div className="relative flex flex-col md:flex-row-reverse items-center w-full group">
+              <div className="absolute left-8 md:left-1/2 w-4 h-4 rounded-full bg-orange-500 border-4 border-[#F4F4F0] dark:border-slate-950 -translate-x-1/2 z-10 shadow-[0_0_10px_rgba(249,115,22,0.5)]"></div>
+              <div className="md:w-1/2 md:pl-12 pl-16 md:pr-0 w-full text-left">
+                <div className="bg-white dark:bg-[#0f172a] p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 transition-transform group-hover:-translate-y-1 relative">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-orange-500 mb-2 block">Step 2</span>
+                  <h3 className="font-[family-name:var(--font-outfit)] font-bold text-xl mb-2 text-slate-900 dark:text-white">Semantic Analysis</h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">Streams diff chunks to Gemini 2.5 Flash for deep context-aware code review and vulnerability detection.</p>
+                </div>
               </div>
-              <h3 className="font-[family-name:var(--font-outfit)] font-bold text-xl mb-2 text-slate-900 dark:text-white">Semantic Analysis</h3>
-              <p className="text-sm text-slate-500">Streams diff chunks to Gemini 2.5 Flash for deep context-aware code review.</p>
+              <div className="md:w-1/2 hidden md:block"></div>
             </div>
 
-            <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 relative">
-              <div className="flex justify-between items-start mb-4">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Step 3</span>
-                <div className="w-5 h-5 rounded-full border-2 border-slate-300 dark:border-slate-600"></div>
+            {/* Step 3 */}
+            <div className="relative flex flex-col md:flex-row items-center w-full group">
+              <div className="absolute left-8 md:left-1/2 w-4 h-4 rounded-full bg-blue-500 border-4 border-[#F4F4F0] dark:border-slate-950 -translate-x-1/2 z-10 shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
+              <div className="md:w-1/2 md:pr-12 pl-16 md:pl-0 w-full md:text-right">
+                <div className="bg-white dark:bg-[#0f172a] p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 transition-transform group-hover:-translate-y-1 relative">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-blue-500 mb-2 block">Step 3</span>
+                  <h3 className="font-[family-name:var(--font-outfit)] font-bold text-xl mb-2 text-slate-900 dark:text-white">Action & Integration</h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">Posts formatted inline comments back to GitHub, dispatches email alerts via Resend, and commits history to Postgres.</p>
+                </div>
               </div>
-              <h3 className="font-[family-name:var(--font-outfit)] font-bold text-xl mb-2 text-slate-900 dark:text-white">GitHub Integration</h3>
-              <p className="text-sm text-slate-500">Posts formatted inline comments and commits history to the Postgres dashboard.</p>
+              <div className="md:w-1/2 hidden md:block"></div>
             </div>
           </div>
         </div>
       </motion.section>
+
+      {/* Footer */}
+      <footer className="mt-12 py-16 bg-white dark:bg-[#0b1121] border-t border-slate-200 dark:border-slate-800 text-center rounded-t-[3rem] shadow-[0_-10px_40px_rgba(0,0,0,0.02)] transition-colors">
+        <div className="max-w-4xl mx-auto px-6 flex flex-col items-center">
+          <div className="flex items-center gap-2 mb-8 opacity-80 hover:opacity-100 transition-opacity">
+            <Radio className="w-5 h-5 text-[#2A4D3E] dark:text-emerald-400" />
+            <span className="font-[family-name:var(--font-outfit)] font-extrabold text-xl tracking-tight text-slate-900 dark:text-white">
+              Code<span className="text-[#2A4D3E] dark:text-emerald-400">Beacon</span>
+            </span>
+          </div>
+          
+          <div className="flex flex-wrap justify-center gap-8 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 mb-8">
+            <a href="https://github.com/SinisterNycto/ReviewPilot" target="_blank" rel="noreferrer" className="hover:text-slate-900 dark:hover:text-white transition-colors">Documentation</a>
+            <a href="mailto:swastik.negi2005@gmail.com" className="hover:text-slate-900 dark:hover:text-white transition-colors">Support</a>
+            <a href="https://www.linkedin.com/in/swastik-negi/" target="_blank" rel="noreferrer" className="hover:text-slate-900 dark:hover:text-white transition-colors">Social</a>
+          </div>
+
+          <p className="text-[10px] font-medium tracking-wider uppercase text-slate-400 dark:text-slate-500">
+            © 2026 CodeBeacon AI. Autonomous & Sophisticated Reviewing.
+          </p>
+        </div>
+      </footer>
     </main>
   );
 }

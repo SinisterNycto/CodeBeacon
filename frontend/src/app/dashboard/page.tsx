@@ -6,7 +6,7 @@ import ReviewsTable from '@/components/ReviewsTable';
 import ReviewDetail from '@/components/ReviewDetail';
 import SeverityChart from '@/components/SeverityChart';
 import { Review, Stats } from '@/types';
-import { RefreshCw, Bot, Filter, Settings } from 'lucide-react';
+import { RefreshCw, Bot, Filter, Settings, Radio } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMemo } from 'react';
 import { SignInButton, UserButton, useUser } from '@clerk/nextjs';
@@ -101,12 +101,13 @@ export default function Dashboard() {
         >
           <div className="flex items-center gap-5">
             <Link href="/" className="flex items-center gap-5 group cursor-pointer hover:opacity-80 transition-opacity">
-              <div className="p-3.5 bg-blue-500/20 rounded-2xl border border-blue-400/30 shadow-[0_0_20px_rgba(59,130,246,0.3)]">
-                <Bot className="w-9 h-9 text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)] group-hover:scale-110 transition-transform" />
+              <div className="relative flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-[0_0_20px_rgba(59,130,246,0.4)] dark:shadow-[0_0_30px_rgba(59,130,246,0.6)] z-10">
+                <Radio className="w-6 h-6 text-white animate-pulse" />
+                <div className="absolute inset-0 rounded-2xl bg-blue-400/40 animate-ping" style={{ animationDuration: '3s' }}></div>
               </div>
-              <div>
-                <h1 className="text-4xl font-outfit font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-blue-600 dark:from-white dark:to-blue-400">CodeBeacon</h1>
-                <p className="text-slate-600 dark:text-blue-100/60 mt-1 font-medium tracking-wide">Autonomous Code Review Agent</p>
+              <div className="flex flex-col justify-center">
+                <h1 className="text-4xl font-outfit font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">Code<span className="text-blue-600 dark:text-blue-400">Beacon</span></h1>
+                <p className="text-slate-500 dark:text-blue-200 font-bold tracking-widest text-[10px] uppercase opacity-90 mt-0.5">Autonomous Code Review Agent</p>
               </div>
             </Link>
           </div>
