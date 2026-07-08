@@ -71,12 +71,12 @@ The application follows a robust 3-layer architecture. A Node.js backend acts as
 4. **Comments posted + dashboard updated:** The backend uses Octokit to post the summary and inline comments back to the PR on GitHub, and then saves the review to the PostgreSQL database which updates the Next.js dashboard.
 
 ## 6. Future Improvements
-* Redis job queue for handling high webhook volume without blocking
+* Implement RAG (Retrieval-Augmented Generation) for full repository context awareness beyond single-file diffs
 * Integrate Slack webhooks for team-wide critical issue notifications
-* Weekly digest report of most common issues across all PRs
 * Fine-tuned model on company-specific coding standards
+* Redis job queue for handling high webhook volume without blocking
 
-## 7. Enterprise Architecture & Known Limitations
+## 7. Known Limitations
 
 **1. Third-Party AI Data Privacy**
 For this portfolio project, the backend is integrated with the public Google Gemini API. In a true enterprise environment, sending proprietary corporate code to a public consumer LLM is a strict security violation. 
