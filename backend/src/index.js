@@ -93,8 +93,15 @@ app.get('/api/users/:clerkId', async (req, res) => {
 });
 
 // Basic healthcheck
-app.get('/', (req, res) => {
-  res.send('PR Review Agent Backend is running');
+app.get('/', async (req, res) => {
+  try {
+    // Ping the database to keep Neon from scaling to zero
+    await prisma.$queryRaw`SELECT 1`;
+    res.send('PR Review Agent Backend is running and DB is warm');
+  } catch (error) {
+    console.error("Healthcheck DB ping failed:", error);
+    res.status(500).send('Backend is running, but DB ping failed');
+  }
 });
 
 // Global error handler
