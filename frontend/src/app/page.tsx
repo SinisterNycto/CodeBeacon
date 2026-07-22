@@ -41,7 +41,7 @@ export default function LandingPage() {
         ) : (
           <SignInButton mode="modal" signUpFallbackRedirectUrl="/dashboard" forceRedirectUrl="/dashboard">
             <button className="bg-[#2A4D3E] text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-[#1f3a2f] transition-all shadow-md flex items-center gap-2">
-              Sign In with GitHub
+              Sign In
             </button>
           </SignInButton>
         )}
@@ -54,7 +54,7 @@ export default function LandingPage() {
           className="text-5xl md:text-7xl font-[family-name:var(--font-outfit)] font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.1]"
         >
           Ship cleaner code, faster. <br />
-          <span className="text-[#2A4D3E] dark:text-emerald-400">Let AI handle the review.</span>
+          Let AI <span className="font-[family-name:var(--font-playfair)] italic font-normal text-[#2A4D3E] dark:text-emerald-400">handle the review.</span>
         </motion.h1>
         
         <motion.p 
